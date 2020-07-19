@@ -11,8 +11,9 @@ import { continents, price } from "./Sections/data";
 function LandingPage() {
   const [Products, setProducts] = useState([]);
   const [Skip, setSkip] = useState(0);
-  const [Limit, setLimit] = useState(6);
+  const [Limit, setLimit] = useState(8);
   const [PostSize, setPostSize] = useState(0);
+  const [Filters, setFilters] = useState({ continents: [], price: [] });
 
   useEffect(() => {
     let variables = {
@@ -58,6 +59,25 @@ function LandingPage() {
     setSkip(updateSkip);
   };
 
+  const showFiltersResults = filters => {
+    let variables = {
+      skip: 0,
+      limit: Limit,
+      filters: filters
+    };
+
+    getProducts(variables);
+    setSkip(0);
+  };
+
+  const handleFilters = (filters, category) => {
+    const newFilters = { ...Filters };
+    newFilters[category] = filters;
+
+    setFilters(newFilters);
+    showFiltersResults(newFilters);
+  };
+
   return (
     <div style={{ width: "75%", margin: "3rem auto" }}>
       <div style={{ textAlign: "center" }}>
@@ -71,7 +91,10 @@ function LandingPage() {
       <Row gutter={[16, 16]}>
         <Col lg={12} xs={24}>
           {/* CheckBox */}
-          <CheckBoxGroup list={continents} />
+          <CheckBoxGroup
+            list={continents}
+            handleFilters={filters => handleFilters(filters, "continents")}
+          />
           <span>name</span>
         </Col>
         <Col lg={12} xs={24}>

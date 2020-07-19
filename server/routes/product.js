@@ -48,7 +48,19 @@ router.post("/uploadProduct", auth, (req, res) => {
 router.post("/getProducts", (req, res) => {
   let skip = req.body.skip ? req.body.skip : 0;
   let limit = req.body.limit ? req.body.limit : 0;
-  Product.find()
+
+  // filters
+  let findArgs = {};
+
+  for (let key in req.body.filters) {
+    if (req.body.filters[key].length > 0) {
+      findArgs[key] = req.body.filters[key];
+    }
+  }
+  console.log(findArgs);
+  // { continents: [ 3, 4 ], price: [] }
+
+  Product.find(findArgs)
     .populate("writer")
     .sort([["_id", "desc"]])
     .skip(skip)

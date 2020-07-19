@@ -7,13 +7,14 @@ function CheckBoxGroup(props) {
   const [CheckedList, setCheckedList] = useState([]);
   const onToggleCheck = value => {
     const list = [...CheckedList];
-    let idx = list.indexOf(value);
+    const idx = list.indexOf(value);
     if (idx === -1) {
       list.push(value);
     } else {
       list.splice(idx, 1);
     }
     setCheckedList(list);
+    props.handleFilters(list);
   };
 
   const renderCheckboxLists = () =>
