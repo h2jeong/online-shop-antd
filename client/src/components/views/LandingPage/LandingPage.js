@@ -1,24 +1,62 @@
-import React, { useState } from "react";
-import { Radio, Row, Col, Card } from "antd";
+import React, { useState, useEffect } from "react";
+import { Radio, Row, Col, Card, message } from "antd";
 import Search from "antd/lib/input/Search";
 import { RocketOutlined } from "@ant-design/icons";
 import Meta from "antd/lib/card/Meta";
 import ImageSlider from "../../utils/ImageSlider";
 import CheckBoxGroup from "./Sections/CheckBoxGroup";
+import axios from "axios";
+import { continents, price } from "./Sections/data";
 
 function LandingPage() {
   const [Products, setProducts] = useState([]);
-  const renderCards =
-    Products &&
-    Products.map((product, idx) => {
-      return (
-        <Col key={idx} lg={6} md={8} xs={24}>
-          <Card hoverable={true} cover={<ImageSlider />}>
-            <Meta title={product.title} description />
-          </Card>
-        </Col>
-      );
+  const [Skip, setSkip] = useState(0);
+  const [Limit, setLimit] = useState(6);
+  const [PostSize, setPostSize] = useState(0);
+
+  useEffect(() => {
+    let variables = {
+      skip: Skip,
+      limit: Limit
+    };
+    getProducts(variables);
+  }, []);
+
+  const getProducts = variables => {
+    axios.post("/api/product/getProducts", variables).then(res => {
+      if (res.data.success) {
+        if (variables.loadMore) {
+          setProducts([...Products, ...res.data.products]);
+        } else {
+          setProducts(res.data.products);
+        }
+        setPostSize(res.data.products.length);
+      } else {
+        message.error("Failed to get product list");
+      }
     });
+  };
+
+  const renderCards = Products.map((product, idx) => {
+    return (
+      <Col key={idx} lg={6} md={8} xs={24}>
+        <Card hoverable={true} cover={<ImageSlider images={product.images} />}>
+          <Meta title={product.title} description={product.price} />
+        </Card>
+      </Col>
+    );
+  });
+
+  const onLoadMore = () => {
+    let updateSkip = Skip + Limit;
+    let variables = {
+      skip: updateSkip,
+      limit: Limit,
+      loadMore: true
+    };
+    getProducts(variables);
+    setSkip(updateSkip);
+  };
 
   return (
     <div style={{ width: "75%", margin: "3rem auto" }}>
@@ -33,7 +71,7 @@ function LandingPage() {
       <Row gutter={[16, 16]}>
         <Col lg={12} xs={24}>
           {/* CheckBox */}
-          <CheckBoxGroup />
+          <CheckBoxGroup list={continents} />
           <span>name</span>
         </Col>
         <Col lg={12} xs={24}>
@@ -81,10 +119,11 @@ function LandingPage() {
       )}
 
       <br />
-
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <button onClick>더보기</button>
-      </div>
+      {PostSize >= Limit && (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <button onClick={onLoadMore}>더보기</button>
+        </div>
+      )}
     </div>
   );
 }

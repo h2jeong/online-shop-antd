@@ -1,30 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { Checkbox, Collapse } from "antd";
 
 const { Panel } = Collapse;
-const continents = [
-  { _id: 1, name: "Africa" },
-  { _id: 2, name: "Europe" },
-  { _id: 3, name: "Asia" },
-  { _id: 4, name: "North America" },
-  { _id: 5, name: "South America" },
-  { _id: 6, name: "Australia" },
-  { _id: 7, name: "Antarctica" }
-];
 
-function CheckBoxGroup() {
+function CheckBoxGroup(props) {
+  const [CheckedList, setCheckedList] = useState([]);
+  const onToggleCheck = value => {
+    const list = [...CheckedList];
+    let idx = list.indexOf(value);
+    if (idx === -1) {
+      list.push(value);
+    } else {
+      list.splice(idx, 1);
+    }
+    setCheckedList(list);
+  };
+
   const renderCheckboxLists = () =>
-    continents.map((value, idx) => (
-      <React.Fragment key={idx}>
-        <Checkbox onChange type="checkbox" checked={false} />
-        <span>{value.name}</span>
-      </React.Fragment>
+    props.list.map((value, idx) => (
+      <Checkbox
+        key={idx}
+        onChange={() => onToggleCheck(value._id)}
+        type="checkbox"
+        checked={CheckedList.indexOf(value._id) === -1 ? false : true}
+      >
+        {value.name}
+      </Checkbox>
     ));
 
   return (
     <div>
       <Collapse defaultActiveKey={["0"]}>
-        <Panel header key="1">
+        <Panel header="Continents" key="1">
           {renderCheckboxLists()}
         </Panel>
       </Collapse>

@@ -22,7 +22,15 @@ function FileUpload(props) {
     });
   };
 
-  const onDelte = () => {};
+  const onDelte = img => {
+    const idx = Images.indexOf(img);
+    const imgArr = [...Images];
+    if (idx !== -1) {
+      imgArr.splice(idx, 1);
+    }
+    setImages(imgArr);
+    props.onRefresh(imgArr);
+  };
 
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -53,7 +61,7 @@ function FileUpload(props) {
         }}
       >
         {Images.map((img, idx) => (
-          <div key={idx} onClick={onDelte}>
+          <div key={idx} onClick={() => onDelte(img)}>
             <img
               src={`http://localhost:8000/${img}`}
               alt={`img_${idx}`}
