@@ -14,7 +14,7 @@ let storage = multer.diskStorage({
   fileFilter: (req, file, cb) => {
     const ext = path.extname(file.originalname);
     if (ext !== ".jpg" || ext !== ".png" || ext !== ".gif") {
-      return cb(res.status(400).end("Only image files are allowed"), false);
+      return cb(res.status(400).end("Only images are allowed"), false);
     }
     cb(null, true);
   }
@@ -26,55 +26,25 @@ router.post("/uploadImage", auth, (req, res) => {
   // after getting that image from client we need to save it inside node server
   // Multer library
   upload(req, res, err => {
-    if (err) return res.json({ success: false, err });
-    return res.json({
+    if (err) if (err) return res.status(400).json({ success: false, err });
+    res.status(200).json({
       success: true,
-      image: res.req.file.path,
-      fileName: res.req.file.finename
+      image: res.req.file.path
     });
   });
 });
 
 router.post("/uploadProduct", auth, (req, res) => {
   // save all the data we got from the client into the DB
-  console.log("req.body:", req.body);
   const product = new Product(req.body);
+  product.writer = req.user._id;
 
   product.save(err => {
     if (err) return res.status(400).json({ success: false, err });
-    return res.status(200).json({ success: true });
+    res.status(200).json({ success: true });
   });
 });
 
-router.post("/getProducts", (req, res) => {
-  let order = req.body.order ? req.body.order : "desc";
-  let sortBy = req.body.sortBy ? req.body.sortBy : "_id";
-  let limit = req.body.limit ? parseInt(req.body.limit) : 100;
-  let skip = req.body.skip ? parseInt(req.body.skip) : 0;
-  let findArgs = {};
-
-  console.log(req.body.filters);
-
-  for (let key in req.body.filters) {
-    if (req.body.filters[key].length > 0) {
-      if (key === "price") {
-      } else {
-        findArgs[key] = req.body.filters[key];
-      }
-    }
-  }
-
-  Product.find(findArgs)
-    .populate("writer")
-    .sort([[sortBy, order]])
-    .skip(skip)
-    .limit(limit)
-    .exec((err, products) => {
-      if (err) return res.status(400).json({ success: false, err });
-      return res
-        .status(200)
-        .json({ success: true, products, postSize: products.length });
-    });
-});
+router.post("/getProducts", (req, res) => {});
 
 module.exports = router;

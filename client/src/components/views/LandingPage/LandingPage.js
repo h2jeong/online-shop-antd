@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Radio, Row, Col, Card } from "antd";
 import Search from "antd/lib/input/Search";
 import { RocketOutlined } from "@ant-design/icons";
@@ -7,6 +7,7 @@ import ImageSlider from "../../utils/ImageSlider";
 import CheckBoxGroup from "./Sections/CheckBoxGroup";
 
 function LandingPage() {
+  const [Products, setProducts] = useState([]);
   const renderCards =
     Products &&
     Products.map((product, idx) => {

@@ -4,7 +4,7 @@ import { Carousel } from "antd";
 function ImageSlider() {
   return (
     <Carousel autoplay>
-      <div key={idx}>
+      <div>
         <img style={{ width: "100%", height: "150px" }} src alt />
       </div>
     </Carousel>
