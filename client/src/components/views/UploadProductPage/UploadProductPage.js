@@ -5,7 +5,6 @@ import Title from "antd/lib/typography/Title";
 import FileUpload from "../../utils/FileUpload";
 import { withRouter } from "react-router-dom";
 import axios from "axios";
-import { useSelector } from "react-redux";
 
 const Continents = [
   { key: 1, value: "Africa" },
@@ -18,8 +17,6 @@ const Continents = [
 ];
 
 function UploadProductPage(props) {
-  const user = useSelector(state => state.user);
-
   const [Product, setProduct] = useState({
     title: "",
     description: "",

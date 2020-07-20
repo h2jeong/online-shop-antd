@@ -32,7 +32,7 @@ function CheckBoxGroup(props) {
   return (
     <div>
       <Collapse defaultActiveKey={["0"]}>
-        <Panel header="Continents" key="1">
+        <Panel header="Continents Type" key="1">
           {renderCheckboxLists()}
         </Panel>
       </Collapse>

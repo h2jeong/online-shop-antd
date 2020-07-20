@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Radio, Row, Col, Card, message } from "antd";
+import { Row, Col, Card, message } from "antd";
 import Search from "antd/lib/input/Search";
 import { RocketOutlined } from "@ant-design/icons";
 import Meta from "antd/lib/card/Meta";
@@ -7,6 +7,7 @@ import ImageSlider from "../../utils/ImageSlider";
 import CheckBoxGroup from "./Sections/CheckBoxGroup";
 import axios from "axios";
 import { continents, price } from "./Sections/data";
+import RadioBox from "./Sections/RadioBox";
 
 function LandingPage() {
   const [Products, setProducts] = useState([]);
@@ -70,12 +71,21 @@ function LandingPage() {
     setSkip(0);
   };
 
+  const handlePriceFilter = filters => {
+    return price.find(item => item._id === filters).array;
+  };
+
   const handleFilters = (filters, category) => {
     const newFilters = { ...Filters };
     newFilters[category] = filters;
 
+    if (category === "price") {
+      const priceArray = handlePriceFilter(filters);
+      newFilters[category] = priceArray;
+    }
     setFilters(newFilters);
     showFiltersResults(newFilters);
+    // console.log(newFilters);
   };
 
   return (
@@ -95,11 +105,13 @@ function LandingPage() {
             list={continents}
             handleFilters={filters => handleFilters(filters, "continents")}
           />
-          <span>name</span>
         </Col>
         <Col lg={12} xs={24}>
           {/* RadioBox */}
-          <Radio value> name </Radio>
+          <RadioBox
+            list={price}
+            handleFilters={filters => handleFilters(filters, "price")}
+          />
         </Col>
       </Row>
 
