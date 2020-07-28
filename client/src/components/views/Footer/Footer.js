@@ -9,7 +9,7 @@ function FooterComponent() {
       style={{ textAlign: "center", background: "#1890ff", color: "white" }}
     >
       ©2020 Created by ZOE. &nbsp;&nbsp;&nbsp;
-      <GithubOutlined /> https://github.com/h2jeong/online-shop-app
+      <GithubOutlined /> https://github.com/h2jeong/online-shop-antd
     </Footer>
   );
 }

@@ -7,9 +7,15 @@ router.get("/auth", auth, (req, res) => {
   // console.log("auth:", req.body, req.user);
   // req에 보내고 온거 확인 후 res에 담을 정보 처리
   res.status(200).json({
-    user: req.user,
+    _id: req.user._id,
+    isAuth: true,
     isAdmin: req.user.role === 0 ? false : true,
-    isAuth: true
+    name: req.user.name,
+    email: req.user.email,
+    role: req.user.role,
+    image: req.user.email,
+    cart: req.user.cart,
+    history: req.user.history
   });
 });
 

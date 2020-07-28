@@ -8,6 +8,7 @@ const userSchema = mongoose.Schema({
   name: { type: String, maxLength: 50 },
   email: { type: String, unique: true },
   password: { type: String, minLenght: 5 },
+  image: String,
   role: { type: Number, default: 0 },
   token: { type: String }
 });

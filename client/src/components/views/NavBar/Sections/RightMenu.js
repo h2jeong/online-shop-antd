@@ -27,7 +27,7 @@ function RightMenu(props) {
     });
   };
 
-  if (user.auth && !user.auth.isAuth) {
+  if (user.authedUser && !user.authedUser.isAuth) {
     return (
       <Menu mode={props.mode}>
         <Menu.Item key="login" icon={<PoweroffOutlined />}>

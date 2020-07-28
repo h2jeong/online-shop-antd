@@ -11,82 +11,33 @@ import RadioBox from "./Sections/RadioBox";
 
 function LandingPage() {
   const [Products, setProducts] = useState([]);
-  const [Skip, setSkip] = useState(0);
-  const [Limit, setLimit] = useState(8);
-  const [PostSize, setPostSize] = useState(0);
-  const [Filters, setFilters] = useState({ continents: [], price: [] });
-
   useEffect(() => {
-    let variables = {
-      skip: Skip,
-      limit: Limit
-    };
-    getProducts(variables);
+    getProducts();
   }, []);
 
-  const getProducts = variables => {
-    axios.post("/api/product/getProducts", variables).then(res => {
+  const getProducts = () => {
+    axios.post("/api/product/getProducts").then(res => {
       if (res.data.success) {
-        if (variables.loadMore) {
-          setProducts([...Products, ...res.data.products]);
-        } else {
-          setProducts(res.data.products);
-        }
-        setPostSize(res.data.products.length);
+        setProducts(res.data.products);
       } else {
-        message.error("Failed to get product list");
+        message.error("Failed to get Product List");
       }
     });
   };
 
-  const renderCards = Products.map((product, idx) => {
+  const renderCards = Products.map(product => {
     return (
-      <Col key={idx} lg={6} md={8} xs={24}>
+      <Col lg={6} md={12} xs={24} key={product._id}>
         <Card hoverable={true} cover={<ImageSlider images={product.images} />}>
-          <Meta title={product.title} description={product.price} />
+          <Meta title={product.title} description={`$${product.price}`} />
         </Card>
       </Col>
     );
   });
 
-  const onLoadMore = () => {
-    let updateSkip = Skip + Limit;
-    let variables = {
-      skip: updateSkip,
-      limit: Limit,
-      loadMore: true
-    };
-    getProducts(variables);
-    setSkip(updateSkip);
-  };
+  const onLoadMore = () => {};
 
-  const showFiltersResults = filters => {
-    let variables = {
-      skip: 0,
-      limit: Limit,
-      filters: filters
-    };
-
-    getProducts(variables);
-    setSkip(0);
-  };
-
-  const handlePriceFilter = filters => {
-    return price.find(item => item._id === filters).array;
-  };
-
-  const handleFilters = (filters, category) => {
-    const newFilters = { ...Filters };
-    newFilters[category] = filters;
-
-    if (category === "price") {
-      const priceArray = handlePriceFilter(filters);
-      newFilters[category] = priceArray;
-    }
-    setFilters(newFilters);
-    showFiltersResults(newFilters);
-    // console.log(newFilters);
-  };
+  const handleFilters = () => {};
 
   return (
     <div style={{ width: "75%", margin: "3rem auto" }}>
@@ -101,17 +52,11 @@ function LandingPage() {
       <Row gutter={[16, 16]}>
         <Col lg={12} xs={24}>
           {/* CheckBox */}
-          <CheckBoxGroup
-            list={continents}
-            handleFilters={filters => handleFilters(filters, "continents")}
-          />
+          <CheckBoxGroup list={continents} handleFilters={handleFilters} />
         </Col>
         <Col lg={12} xs={24}>
           {/* RadioBox */}
-          <RadioBox
-            list={price}
-            handleFilters={filters => handleFilters(filters, "price")}
-          />
+          <RadioBox list={price} handleFilters={handleFilters} />
         </Col>
       </Row>
 
@@ -135,8 +80,7 @@ function LandingPage() {
       </div>
 
       {/* Cards */}
-
-      {Products.length === 0 ? (
+      {Products.length < 0 ? (
         <div
           style={{
             display: "flex",
@@ -152,13 +96,11 @@ function LandingPage() {
           <Row gutter={[16, 16]}>{renderCards}</Row>
         </div>
       )}
-
       <br />
-      {PostSize >= Limit && (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <button onClick={onLoadMore}>더보기</button>
-        </div>
-      )}
+
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <button onClick={onLoadMore}>더보기</button>
+      </div>
     </div>
   );
 }
