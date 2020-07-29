@@ -60,6 +60,8 @@ router.post("/getProducts", (req, res) => {
   let orderBy = req.body.orderBy ? req.body.orderBy : -1;
   let skip = req.body.skip ? req.body.skip : 0;
   let limit = req.body.limit ? req.body.limit : 0;
+  let term = req.body.term;
+
   let conditions = {};
   // filters, category
   console.log(req.body.filters);
@@ -80,14 +82,27 @@ router.post("/getProducts", (req, res) => {
   }
   console.log(req.body, conditions);
   // MyModel.find({ name: 'john', age: { $gte: 18 }}, function (err, docs) {});
-  Product.find(conditions)
-    .sort({ [sort]: orderBy })
-    .skip(skip)
-    .limit(limit)
-    .exec((err, products) => {
-      if (err) return res.status(400).json({ success: false, err });
-      res.status(200).json({ success: true, products });
-    });
+
+  if (term) {
+    Product.find(conditions)
+      .find({ $text: { $search: term } })
+      .sort({ [sort]: orderBy })
+      .skip(skip)
+      .limit(limit)
+      .exec((err, products) => {
+        if (err) return res.status(400).json({ success: false, err });
+        res.status(200).json({ success: true, products });
+      });
+  } else {
+    Product.find(conditions)
+      .sort({ [sort]: orderBy })
+      .skip(skip)
+      .limit(limit)
+      .exec((err, products) => {
+        if (err) return res.status(400).json({ success: false, err });
+        res.status(200).json({ success: true, products });
+      });
+  }
 });
 
 module.exports = router;

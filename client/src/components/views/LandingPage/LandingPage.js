@@ -14,6 +14,7 @@ function LandingPage() {
   const [Skip, setSkip] = useState(0);
   const Limit = 8;
   const [Filters, setFilters] = useState({ continents: [], price: [] });
+  const [Term, setTerm] = useState("");
 
   useEffect(() => {
     const variables = {
@@ -24,6 +25,7 @@ function LandingPage() {
   }, []);
 
   const getProducts = variables => {
+    console.log(variables);
     axios.post("/api/product/getProducts", variables).then(res => {
       if (res.data.success) {
         setProducts(res.data.products);
@@ -32,16 +34,6 @@ function LandingPage() {
       }
     });
   };
-
-  const renderCards = Products.map(product => {
-    return (
-      <Col lg={6} md={12} xs={24} key={product._id}>
-        <Card hoverable={true} cover={<ImageSlider images={product.images} />}>
-          <Meta title={product.title} description={`$${product.price}`} />
-        </Card>
-      </Col>
-    );
-  });
 
   const onLoadMore = () => {
     let updateSkip = Skip + Limit;
@@ -58,15 +50,38 @@ function LandingPage() {
     let variables = {
       skip: Skip,
       limit: Limit,
-      filters: { ...Filters, [category]: filterArr }
+      filters: { ...Filters, [category]: filterArr },
+      term: Term
     };
     setFilters({ ...Filters, [category]: filterArr });
 
     // filterArr.length === 0 ? server routes로 throw
-    console.log(variables);
     getProducts(variables);
     setSkip(0);
   };
+
+  const handleSearchTerm = e => {
+    let variables = {
+      skip: Skip,
+      limit: Limit,
+      filters: Filters,
+      term: e.target.value
+    };
+
+    setTerm(e.target.value);
+    getProducts(variables);
+    setSkip(0);
+  };
+
+  const renderCards = Products.map(product => {
+    return (
+      <Col lg={6} md={12} xs={24} key={product._id}>
+        <Card hoverable={true} cover={<ImageSlider images={product.images} />}>
+          <Meta title={product.title} description={`$${product.price}`} />
+        </Card>
+      </Col>
+    );
+  });
 
   return (
     <div style={{ width: "75%", margin: "3rem auto" }}>
@@ -107,9 +122,9 @@ function LandingPage() {
         <div>
           <Search
             placeholder="input search text"
-            onChange
+            onChange={handleSearchTerm}
             style={{ width: 200 }}
-            value
+            value={Term}
           />
         </div>
       </div>
