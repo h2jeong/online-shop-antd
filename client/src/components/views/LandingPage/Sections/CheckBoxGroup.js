@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Checkbox, Collapse, Row, Col } from "antd";
+import { Checkbox, Collapse } from "antd";
 
 const { Panel } = Collapse;
 
@@ -11,11 +11,12 @@ function CheckBoxGroup(props) {
     let checkedList = Checked.slice();
 
     if (index < 0) {
-      setChecked([...checkedList, itemId]);
+      checkedList.push(itemId);
     } else {
       checkedList.splice(index, 1);
-      setChecked(checkedList);
     }
+    setChecked(checkedList);
+    props.handleFilters(checkedList);
   };
 
   const renderCheckboxLists = () => {

@@ -13,6 +13,7 @@ function LandingPage() {
   const [Products, setProducts] = useState([]);
   const [Skip, setSkip] = useState(0);
   const Limit = 8;
+  // const [Filters, setFilters] = useState({ continents: [], price: [] });
 
   useEffect(() => {
     const variables = {
@@ -52,7 +53,16 @@ function LandingPage() {
     setSkip(0);
   };
 
-  const handleFilters = () => {};
+  const handleFilters = (filterArr, category) => {
+    let variables = {
+      skip: Skip,
+      limit: Limit,
+      filters: { [category]: filterArr }
+    };
+    console.log(variables);
+    getProducts(variables);
+    setSkip(0);
+  };
 
   return (
     <div style={{ width: "75%", margin: "3rem auto" }}>
@@ -67,7 +77,10 @@ function LandingPage() {
       <Row gutter={[16, 16]}>
         <Col lg={12} xs={24}>
           {/* CheckBox */}
-          <CheckBoxGroup list={continents} handleFilters={handleFilters} />
+          <CheckBoxGroup
+            list={continents}
+            handleFilters={filterArr => handleFilters(filterArr, "continents")}
+          />
         </Col>
         <Col lg={12} xs={24}>
           {/* RadioBox */}
