@@ -25,7 +25,7 @@ function LandingPage() {
   }, []);
 
   const getProducts = variables => {
-    console.log(variables);
+    // console.log(variables);
     axios.post("/api/product/getProducts", variables).then(res => {
       if (res.data.success) {
         setProducts(res.data.products);
@@ -40,7 +40,8 @@ function LandingPage() {
     const variables = {
       skip: updateSkip,
       limit: Limit,
-      filters: Filters
+      filters: Filters,
+      term: Term
     };
     getProducts(variables);
     setSkip(0);
@@ -147,10 +148,11 @@ function LandingPage() {
         </div>
       )}
       <br />
-
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <button onClick={onLoadMore}>더보기</button>
-      </div>
+      {Products.length >= Limit && (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <button onClick={onLoadMore}>더보기</button>
+        </div>
+      )}
     </div>
   );
 }
