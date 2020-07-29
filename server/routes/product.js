@@ -65,14 +65,16 @@ router.post("/getProducts", (req, res) => {
   console.log(req.body.filters);
   if (req.body.filters) {
     for (const [key, value] of Object.entries(req.body.filters)) {
-      if (key === "continents") {
-        conditions[key] = { $in: value };
-      } else if (key === "price") {
-        // [280, 299]
-        conditions[key] = {
-          $gte: value[0],
-          $lte: value[1]
-        };
+      if (value.length > 0) {
+        if (key === "continents") {
+          conditions[key] = { $in: value };
+        } else if (key === "price") {
+          // [280, 299]
+          conditions[key] = {
+            $gte: value[0],
+            $lte: value[1]
+          };
+        }
       }
     }
   }

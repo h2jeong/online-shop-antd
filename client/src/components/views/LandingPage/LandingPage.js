@@ -13,7 +13,7 @@ function LandingPage() {
   const [Products, setProducts] = useState([]);
   const [Skip, setSkip] = useState(0);
   const Limit = 8;
-  // const [Filters, setFilters] = useState({ continents: [], price: [] });
+  const [Filters, setFilters] = useState({ continents: [], price: [] });
 
   useEffect(() => {
     const variables = {
@@ -47,7 +47,8 @@ function LandingPage() {
     let updateSkip = Skip + Limit;
     const variables = {
       skip: updateSkip,
-      limit: Limit
+      limit: Limit,
+      filters: Filters
     };
     getProducts(variables);
     setSkip(0);
@@ -57,8 +58,11 @@ function LandingPage() {
     let variables = {
       skip: Skip,
       limit: Limit,
-      filters: { [category]: filterArr }
+      filters: { ...Filters, [category]: filterArr }
     };
+    setFilters({ ...Filters, [category]: filterArr });
+
+    // filterArr.length === 0 ? server routes로 throw
     console.log(variables);
     getProducts(variables);
     setSkip(0);
@@ -84,7 +88,10 @@ function LandingPage() {
         </Col>
         <Col lg={12} xs={24}>
           {/* RadioBox */}
-          <RadioBox list={price} handleFilters={handleFilters} />
+          <RadioBox
+            list={price}
+            handleFilters={filterArr => handleFilters(filterArr, "price")}
+          />
         </Col>
       </Row>
 
