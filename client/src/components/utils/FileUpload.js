@@ -12,7 +12,7 @@ function FileUpload(props) {
     formData.append("file", files[0]);
     const config = { header: { "content-type": "multipart/form-data" } };
 
-    axios.post("/api/product/uploadImage", formData, config).then(res => {
+    axios.post("/api/product/uploadImages", formData, config).then(res => {
       if (res.data.success) {
         setImages([...Images, res.data.image]);
         props.onRefresh([...Images, res.data.image]);
@@ -22,14 +22,15 @@ function FileUpload(props) {
     });
   };
 
-  const onDelte = img => {
-    const idx = Images.indexOf(img);
-    const imgArr = [...Images];
-    if (idx !== -1) {
-      imgArr.splice(idx, 1);
+  const onDelete = img => {
+    let imgIndex = Images.indexOf(img);
+    let imgArray = Images.slice();
+    if (imgIndex > -1) {
+      imgArray.splice(imgIndex, 1);
     }
-    setImages(imgArr);
-    props.onRefresh(imgArr);
+
+    setImages(imgArray);
+    props.onRefresh(imgArray);
   };
 
   return (
@@ -61,7 +62,7 @@ function FileUpload(props) {
         }}
       >
         {Images.map((img, idx) => (
-          <div key={idx} onClick={() => onDelte(img)}>
+          <div key={idx} onClick={() => onDelete(img)}>
             <img
               src={`http://localhost:8000/${img}`}
               alt={`img_${idx}`}

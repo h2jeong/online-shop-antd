@@ -11,12 +11,19 @@ import RadioBox from "./Sections/RadioBox";
 
 function LandingPage() {
   const [Products, setProducts] = useState([]);
+  const [Skip, setSkip] = useState(0);
+  const Limit = 8;
+
   useEffect(() => {
-    getProducts();
+    const variables = {
+      skip: Skip,
+      limit: Limit
+    };
+    getProducts(variables);
   }, []);
 
-  const getProducts = () => {
-    axios.post("/api/product/getProducts").then(res => {
+  const getProducts = variables => {
+    axios.post("/api/product/getProducts", variables).then(res => {
       if (res.data.success) {
         setProducts(res.data.products);
       } else {
@@ -35,7 +42,15 @@ function LandingPage() {
     );
   });
 
-  const onLoadMore = () => {};
+  const onLoadMore = () => {
+    let updateSkip = Skip + Limit;
+    const variables = {
+      skip: updateSkip,
+      limit: Limit
+    };
+    getProducts(variables);
+    setSkip(0);
+  };
 
   const handleFilters = () => {};
 
