@@ -105,4 +105,13 @@ router.post("/getProducts", (req, res) => {
   }
 });
 
+router.get("/getProductById", (req, res) => {
+  let productIds = req.query.productIds;
+  // console.log(productIds);
+  Product.find({ _id: { $in: productIds } }).exec((err, products) => {
+    if (err) return res.status(400).json({ success: false, err });
+    res.status(200).json({ success: true, products });
+  });
+});
+
 module.exports = router;

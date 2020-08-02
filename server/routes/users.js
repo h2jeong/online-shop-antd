@@ -100,4 +100,15 @@ router.post("/logout", auth, (req, res) => {
 
 // Ref: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#findOneAndUpdate
 
+router.post("/addProductToCart", auth, (req, res) => {
+  const productId = req.body.productId;
+  User.find({ _id: req.user._id }, (err, userInfo) => {
+    if (err) return res.status(400).json({ success: false, err });
+
+    // 유저의 카트에 아디가 없으면 넣어주고
+    // 있으면 quantity + 1
+    userInfo.find({cart: {id: productId}})
+  });
+});
+
 module.exports = router;
